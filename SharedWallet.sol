@@ -1,10 +1,13 @@
 pragma solidity ^0.6.0;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.0.0-beta.0/contracts/ownership/Ownable.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.0.0-beta.0/contracts/math/SafeMath.sol";
 
 
 contract SimpleWallet is Ownable{
     mapping (address => uint) public user;
+    
+    using SafeMath for uint;
     
     event ChangeAllowance(address indexed _dest, address indexed _src, uint oldAmount, uint newAmount);
     event SendMoney(address indexed _dest, uint _amount);
@@ -25,8 +28,8 @@ contract SimpleWallet is Ownable{
     }
     
     function reduceAllowance(address _id, uint _amount) public authorizedSubjects(_amount) {
-        emit ChangeAllowance(_id, msg.sender, user[_id], user[_id]- _amount);
-        user[_id] -= _amount;
+        emit ChangeAllowance(_id, msg.sender, user[_id], user[_id].sub(_amount));
+        user[_id].sub(_amount);
     }
     
     
