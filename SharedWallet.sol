@@ -41,6 +41,10 @@ contract SimpleWallet is Ownable{
         _to.transfer(_amount);
     }
     
+    function renounceOwnership() public override onlyOwner{
+        revert("Unable to renounce ownership");
+    }
+    
     receive () external payable {
         emit ReceiveMoney(msg.sender, msg.value);
     }
