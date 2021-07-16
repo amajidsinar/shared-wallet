@@ -7,6 +7,7 @@ contract SimpleWallet is Ownable{
     mapping (address => uint) public user;
     
     function addAllowance(address _id, uint _amount) public onlyOwner {
+        require(_amount <= address(this).balance, "NOT ENOUGH FUNDS IN THE SMART CONTRACT");
         user[_id] = _amount;
     }
     
