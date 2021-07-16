@@ -6,10 +6,16 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.0.0-beta.
 contract SimpleWallet is Ownable{
     mapping (address => uint) public user;
     
+    event ChangeAllowance(address indexed _dest, address indexed _src, uint oldAmount, uint newAmount);
+    
+    
     function addAllowance(address _id, uint _amount) public onlyOwner {
+        emit ChangeAllowance(_id, msg.sender, user[_id], _amount);
         require(_amount <= address(this).balance, "NOT ENOUGH FUNDS IN THE SMART CONTRACT");
         user[_id] = _amount;
     }
+    
+    
     
     modifier authorizedSubjects(uint _amount){
         require (isOwner() || user[msg.sender] >= _amount, "YOU ARE NOT ALLOWED");
@@ -17,6 +23,7 @@ contract SimpleWallet is Ownable{
     }
     
     function reduceAllowance(address _id, uint _amount) public authorizedSubjects(_amount) {
+        emit ChangeAllowance(_id, msg.sender, user[_id], user[_id]- _amount);
         user[_id] -= _amount;
     }
     
@@ -29,5 +36,6 @@ contract SimpleWallet is Ownable{
     }
     receive () external payable {
     }
+
 }
 
