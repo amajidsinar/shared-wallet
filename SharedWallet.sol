@@ -7,6 +7,8 @@ contract SimpleWallet is Ownable{
     mapping (address => uint) public user;
     
     event ChangeAllowance(address indexed _dest, address indexed _src, uint oldAmount, uint newAmount);
+    event SendMoney(address indexed _dest, uint _amount);
+    event ReceiveMoney(address indexed _src, uint _amount);
     
     
     function addAllowance(address _id, uint _amount) public onlyOwner {
@@ -32,9 +34,12 @@ contract SimpleWallet is Ownable{
         if(!isOwner()) {
             reduceAllowance(msg.sender, _amount);
         }
+        emit SendMoney(_to, _amount);
         _to.transfer(_amount);
     }
+    
     receive () external payable {
+        emit ReceiveMoney(msg.sender, msg.value);
     }
 
 }
